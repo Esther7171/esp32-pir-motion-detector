@@ -2,7 +2,7 @@
 
 A real-time motion detection system built with an ESP32 and HC-SR501 PIR sensor. When motion is detected, it sends an instant alert to a live web dashboard accessible from any device on the same WiFi network — no app install needed, works directly in your phone browser.
 
-![Dashboard Preview](assets/dashboard_preview.png)
+<img width="460" height="998" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
 
 ---
 

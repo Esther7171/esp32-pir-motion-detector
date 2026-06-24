@@ -53,14 +53,10 @@ The HC-SR501 has 3 pins on the bottom edge. Hold the sensor with the white dome 
 | OUT | GPIO 13 | Yellow or any color |
 | GND | GND | Black |
 
-<<<<<<< HEAD
-<img width="752" height="468" alt="wiring diagram" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
-=======
 <img width="752" height="468" alt="image" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
 
 
 > Use female-to-female jumper wires since both boards have male header pins.
->>>>>>> 5c37caba093c882fb4ac32d2401a31ba665538e3
 
 ```
 HC-SR501              ESP32

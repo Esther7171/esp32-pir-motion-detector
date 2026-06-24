@@ -188,7 +188,7 @@ The events list shows start time, end time, total duration and whether each dete
 
 ### Log Tab
 
-The log tab shows the raw data saved to the ESP32 flash memory. Tap Refresh to load the latest entries. Tap Copy All to copy the entire log to your clipboard then paste it anywhere to analyze the data. Tap Clear to wipe the log and start fresh.
+Shows raw data saved to ESP32 flash. Tap Refresh to load new entries. Tap Copy All to copy the log to your clipboard. Tap Clear to wipe it and start fresh.
 
 ---
 
@@ -204,11 +204,11 @@ MOTION #2 | held:7800ms | time:98s   someone stood in range for 7.8 seconds
 
 **What held time means**
 
-Held is how long the sensor output signal stayed HIGH after being triggered. It tells you how long someone was within the detection zone. It does not tell you how far away they were. This sensor cannot measure distance. It only detects changes in infrared radiation.
+Held is how long the sensor signal stayed HIGH. It tells you how long someone was in the detection zone. This sensor cannot measure distance. It only detects infrared changes.
 
 **How false alarms are detected**
 
-Any trigger that lasts less than 500 milliseconds is automatically classified as a false alarm. Real human movement through a PIR detection zone always takes longer than half a second. Very short pulses are caused by electrical noise, temperature changes or the sensor warming up.
+Any trigger under 500 milliseconds is classified as a false alarm. Real movement always takes longer than half a second. Short pulses come from electrical noise, temperature changes or the sensor warming up.
 
 ---
 
@@ -259,9 +259,9 @@ The HC-SR501 sometimes produces short spurious triggers caused by:
 - The sensor self-triggering when the jumper is in H mode
 - Vibration or air movement from fans
 
-The code measures the duration of every trigger. When the signal goes LOW the code checks how long it was HIGH. If the duration is below 500 milliseconds it sends a false alarm event to the dashboard shown in orange. If it is above 500 milliseconds it is classified as real motion shown in red.
+The code checks how long the signal stayed HIGH after each trigger. Under 500 milliseconds shows as a false alarm in orange. Over 500 milliseconds shows as real motion in red.
 
-This threshold works well in practice because a person moving through a 110 degree detection cone at any normal walking speed will always trigger the sensor for more than half a second.
+A person walking through the detection zone at any normal speed will always trigger it for more than half a second.
 
 ---
 

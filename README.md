@@ -1,6 +1,6 @@
 # ESP32 PIR Motion Detector with Live Web Dashboard
 
-Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor. Get instant alerts on your phone browser the moment motion is detected. No app install needed. Works on iPhone and Android over your home WiFi.
+This ESP32 motion sensor project pairs the HC-SR501 PIR sensor with Arduino to build a real-time motion detection system with a live web dashboard. It works as a home automation trigger or as a first IoT beginner project. Get instant alerts on your phone browser the moment motion is detected. No app install needed. Works on iPhone and Android over your home WiFi.
 
 <div align="center">
     <img width="460" height="800" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
@@ -130,7 +130,7 @@ Go to Tools then Board then ESP32 Arduino then ESP32 Dev Module
 
 ## Uploading the Code
 
-1. Open `code/motion.ino` in Arduino IDE
+1. Git clone this repo or download the ZIP. Open Arduino IDE. Go to File then Open. Navigate to the code folder and select motion.ino
 
 2. Find these two lines near the top of the file:
 
@@ -142,6 +142,8 @@ const char* password = "YOUR_WIFI_PASSWORD";
 3. Replace the placeholder text with your actual 2.4GHz WiFi name and password. The values are case sensitive.
 
 > If your router broadcasts two networks like MyWifi and MyWifi_5G then always use the one without 5G in the name.
+
+> Quick tip: After uploading press Ctrl+Shift+M on Windows or Cmd+Shift+M on Mac to open Serial Monitor. No need to go through the Tools menu every time.
 
 4. Connect the ESP32 to your computer with a USB cable
 
@@ -155,7 +157,7 @@ const char* password = "YOUR_WIFI_PASSWORD";
 
 8. Set the baud rate to 115200 using the dropdown at the bottom right
 
-9. Press the EN button on the ESP32 to restart it
+9. Press the EN button (the red button on the top left of the board) to restart it. This is the most important button you will use.
 
 10. You will see this output:
 
@@ -234,7 +236,7 @@ Any trigger that lasts less than 500 milliseconds is automatically classified as
 ## Troubleshooting
 
 **Serial Monitor shows nothing after upload**
-Press the EN button on the ESP32 to restart it. The Serial Monitor needs a restart to show output.
+Press the EN button (the red button on the top left of the board) to restart it. The Serial Monitor needs a restart to show output.
 
 **Upload stuck at Connecting**
 Hold the BOOT button on the ESP32 while the upload is trying to connect. Release it when you see percentage progress in the output.

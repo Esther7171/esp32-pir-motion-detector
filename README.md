@@ -3,6 +3,7 @@
 Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor. Get instant alerts on your phone browser the moment motion is detected. No app install needed. Works on iPhone and Android over your home WiFi.
 
 <img width="460" height="998" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
+<<<<<<< HEAD
 
 ---
 
@@ -11,6 +12,8 @@ Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor
 This project turns a cheap PIR sensor and an ESP32 into a smart motion detector with a live dashboard you can open on any phone or laptop. When someone walks into the sensor zone the dashboard lights up instantly with a radar animation and a chime sound. You can see exactly how long the motion lasted and whether it was real or a false alarm.
 
 Everything runs locally on your WiFi network. No cloud service. No subscription. No app download.
+=======
+>>>>>>> 5c37caba093c882fb4ac32d2401a31ba665538e3
 
 ---
 
@@ -51,7 +54,14 @@ The HC-SR501 has 3 pins on the bottom edge. Hold the sensor with the white dome 
 | OUT | GPIO 13 | Yellow or any color |
 | GND | GND | Black |
 
+<<<<<<< HEAD
 <img width="752" height="468" alt="wiring diagram" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
+=======
+<img width="752" height="468" alt="image" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
+
+
+> Use female-to-female jumper wires since both boards have male header pins.
+>>>>>>> 5c37caba093c882fb4ac32d2401a31ba665538e3
 
 ```
 HC-SR501              ESP32

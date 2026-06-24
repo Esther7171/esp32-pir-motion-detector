@@ -3,9 +3,8 @@
 Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor. Get instant alerts on your phone browser the moment motion is detected. No app install needed. Works on iPhone and Android over your home WiFi.
 
 <div align="center">
-<img width="460" height="998" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
+    <img width="460" height="998" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
 </div>
-<<<<<<< HEAD
 
 ---
 
@@ -14,8 +13,6 @@ Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor
 This project turns a cheap PIR sensor and an ESP32 into a smart motion detector with a live dashboard you can open on any phone or laptop. When someone walks into the sensor zone the dashboard lights up instantly with a radar animation and a chime sound. You can see exactly how long the motion lasted and whether it was real or a false alarm.
 
 Everything runs locally on your WiFi network. No cloud service. No subscription. No app download.
-=======
->>>>>>> 5c37caba093c882fb4ac32d2401a31ba665538e3
 
 ---
 

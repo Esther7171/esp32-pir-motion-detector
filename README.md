@@ -78,11 +78,11 @@ Do these steps before connecting anything.
 
 **Step 1 - Put the white dome back on**
 
-The white dome is the Fresnel lens. It focuses infrared radiation onto the sensor element. Always keep it on during use. Remove it only to identify the pins.
+The dome is the lens. Keep it on during use. Remove it only to identify the pins.
 
 **Step 2 - Move the jumper to L position**
 
-There is a small black plastic jumper on the PIR board near the pins. Move it to the L position. In H mode the sensor re-triggers itself automatically every few seconds even when nothing is moving. This causes constant false alarms. L mode fires once and waits.
+There is a small black jumper on the PIR board near the pins. Move it to L. H mode re-triggers the sensor every few seconds even when nothing is moving. L mode fires once and waits.
 
 **Step 3 - Adjust the potentiometers**
 
@@ -93,7 +93,7 @@ There is a small black plastic jumper on the PIR board near the pins. Move it to
 
 **Step 4 - Let it warm up**
 
-The PIR sensor needs about 30 seconds after power on to calibrate itself to the room temperature. During this time it fires random signals. The code automatically ignores all signals for the first 30 seconds so you do not need to do anything.
+After power on the sensor fires random signals for about 30 seconds while it adjusts to room temperature. The code ignores everything during this window. You do not need to do anything.
 
 ---
 
@@ -130,43 +130,37 @@ Go to Tools then Board then ESP32 Arduino then ESP32 Dev Module
 
 ## Uploading the Code
 
-1. Git clone this repo or download the ZIP. Open Arduino IDE. Go to File then Open. Navigate to the code folder and select motion.ino
+1. Git clone this repo or download the ZIP. Open Arduino IDE. Go to File then Open. Navigate to the code folder and select motion.ino.
 
-2. Find these two lines near the top of the file:
+2. Find these two lines near the top and replace with your WiFi details:
 
 ```cpp
 const char* ssid     = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
 ```
 
-3. Replace the placeholder text with your actual 2.4GHz WiFi name and password. The values are case sensitive.
+Use your 2.4GHz network. If you have two networks like MyWifi and MyWifi_5G pick the one without 5G.
 
-> If your router broadcasts two networks like MyWifi and MyWifi_5G then always use the one without 5G in the name.
+3. Connect the ESP32 to your computer with a USB cable.
 
-> Quick tip: After uploading press Ctrl+Shift+M on Windows or Cmd+Shift+M on Mac to open Serial Monitor. No need to go through the Tools menu every time.
+4. Go to Tools then Port and select the COM port. On Windows it is usually COM4 or COM6.
 
-4. Connect the ESP32 to your computer with a USB cable
+5. Click the Upload button (right arrow at the top left).
 
-5. Go to Tools then Port and select the correct COM port (usually COM4 or COM6 on Windows)
+> If upload gets stuck at Connecting hold the BOOT button on the board until you see progress in the output then release it.
 
-6. Click the Upload button (the right arrow at the top left)
+6. Open Serial Monitor. Press **Ctrl+Shift+M** on Windows or **Cmd+Shift+M** on Mac. Set baud rate to 115200.
 
-> If the upload gets stuck at Connecting then hold the BOOT button on the ESP32 board until you see upload progress in the output panel then release it.
+> **Now press the EN button. It is the red button on the top left of the board. This restarts the ESP32. Serial Monitor shows nothing until you do this.**
 
-7. After upload finishes open Tools then Serial Monitor
-
-8. Set the baud rate to 115200 using the dropdown at the bottom right
-
-9. Press the EN button (the red button on the top left of the board) to restart it. This is the most important button you will use.
-
-10. You will see this output:
+7. You will see:
 
 ```
 Connecting.....
 Connected! IP: 192.168.1.42
 ```
 
-Note down the IP address shown. You will need it to open the dashboard.
+Write down the IP address. You need it to open the dashboard.
 
 ---
 
@@ -236,7 +230,7 @@ Any trigger that lasts less than 500 milliseconds is automatically classified as
 ## Troubleshooting
 
 **Serial Monitor shows nothing after upload**
-Press the EN button (the red button on the top left of the board) to restart it. The Serial Monitor needs a restart to show output.
+Press the **EN button** (red button on the top left of the board) to restart the ESP32. Serial Monitor shows nothing until you do this.
 
 **Upload stuck at Connecting**
 Hold the BOOT button on the ESP32 while the upload is trying to connect. Release it when you see percentage progress in the output.

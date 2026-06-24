@@ -43,6 +43,9 @@ The HC-SR501 has 3 pins on the bottom edge. When the **white dome faces you**, t
 | OUT (signal) | GPIO 13 | Blue or any color |
 | GND | GND | Black |
 
+<img width="752" height="468" alt="image" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
+
+
 > Use female-to-female jumper wires since both boards have male header pins.
 
 ```

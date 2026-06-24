@@ -1,249 +1,290 @@
-# ESP32 PIR Motion Detector
+# ESP32 PIR Motion Detector with Live Web Dashboard
 
-A real-time motion detection system built with an ESP32 and HC-SR501 PIR sensor. When motion is detected, it sends an instant alert to a live web dashboard accessible from any device on the same WiFi network — no app install needed, works directly in your phone browser.
+Build a real-time motion detection system using an ESP32 and HC-SR501 PIR sensor. Get instant alerts on your phone browser the moment motion is detected. No app install needed. Works on iPhone and Android over your home WiFi.
 
-![Dashboard Preview](assets/dashboard_preview.png)
+<img width="460" height="998" alt="dashboard_preview" src="https://github.com/user-attachments/assets/cfeb1424-344f-4cf5-99fc-c4cc4bce8e1c" />
+
+---
+
+## What This Project Does
+
+This project turns a cheap PIR sensor and an ESP32 into a smart motion detector with a live dashboard you can open on any phone or laptop. When someone walks into the sensor zone the dashboard lights up instantly with a radar animation and a chime sound. You can see exactly how long the motion lasted and whether it was real or a false alarm.
+
+Everything runs locally on your WiFi network. No cloud service. No subscription. No app download.
 
 ---
 
 ## Features
 
-- Live web dashboard with radar animation
-- Instant WebSocket alerts — no page refresh needed
-- False positive detection and filtering
-- Live motion timer — shows how long someone is in range
-- Event log with start time, end time, and duration
-- Works on iPhone and Android browsers
-- Saves log to ESP32 flash memory (SPIFFS)
-- Copy log and paste it anywhere to analyze false triggers
+- Live radar dashboard with real-time blip animation
+- Instant WebSocket alerts with no page refresh
+- Smart false positive filtering based on signal duration
+- Live motion timer that counts up while someone is in range
+- Full event log showing start time, end time and duration of each detection
+- Works in Safari on iPhone and Chrome on Android
+- Saves log file to ESP32 flash memory so nothing is lost on restart
+- One tap copy of the log so you can paste and analyze it anywhere
 
 ---
 
-## What You Need
+## Parts You Need
 
 | Part | Details |
 |---|---|
-| ESP32 WROOM-32 | Any 30-pin variant works |
-| HC-SR501 PIR Sensor | Infrared motion sensor |
-| 3x Female-to-Female jumper wires | For connecting PIR to ESP32 |
+| ESP32 WROOM-32 | Any 30 pin variant works |
+| HC-SR501 PIR Sensor | Infrared passive motion sensor |
+| 3 Female to Female jumper wires | For connecting PIR to ESP32 |
 | USB cable | To upload code from your computer |
-| WiFi network | 2.4GHz only — ESP32 does not support 5GHz |
+| WiFi router | Must be 2.4GHz. ESP32 does not support 5GHz |
 
-> **Total cost:** Around ₹600–800 if buying from local market or Amazon India
+> **Total cost in India:** Around Rs 600 to 800 from local electronics market or Amazon
 
 ---
 
-## Wiring
+## Wiring Guide
 
-The HC-SR501 has 3 pins on the bottom edge. When the **white dome faces you**, the pins are ordered left to right: **VCC → OUT → GND**
+The HC-SR501 has 3 pins on the bottom edge. Hold the sensor with the white dome facing you. The pins go left to right in this order: VCC then OUT then GND.
 
-| HC-SR501 Pin | ESP32 Pin | Wire Color (suggested) |
+| HC-SR501 Pin | ESP32 Pin | Wire Color |
 |---|---|---|
 | VCC | VIN (5V) | Red |
-| OUT (signal) | GPIO 13 | Blue or any color |
+| OUT | GPIO 13 | Yellow or any color |
 | GND | GND | Black |
 
-> Use female-to-female jumper wires since both boards have male header pins.
+<img width="752" height="468" alt="wiring diagram" src="https://github.com/user-attachments/assets/579c1d9f-5479-4184-9cec-fad9b30eac49" />
 
 ```
-HC-SR501                    ESP32
----------                   -----
-  VCC  ─────────────────►  VIN
-  OUT  ─────────────────►  GPIO 13
-  GND  ─────────────────►  GND
+HC-SR501              ESP32
+--------              -----
+  VCC  ────────────► VIN
+  OUT  ────────────► GPIO 13
+  GND  ────────────► GND
 ```
 
-> **Important:** Use VIN (5V), not 3.3V. The HC-SR501 needs 5V to operate correctly.
+Use female to female jumper wires since both boards have male header pins.
+
+> Use VIN for 5V power. Do not use the 3.3V pin. The HC-SR501 needs at least 4.5V to work correctly.
 
 ---
 
-## PIR Sensor Setup
+## Setting Up the PIR Sensor
 
-Before connecting, set up your PIR sensor correctly:
+Do these steps before connecting anything.
 
-**1. Put the white dome back on**
-The dome is the Fresnel lens — it focuses infrared onto the sensor. Always keep it on during use.
+**Step 1 - Put the white dome back on**
 
-**2. Set the jumper to L mode**
-There is a small black jumper on the board. Move it to the **L position** (single trigger). In H mode the sensor re-triggers itself every few seconds even with nothing moving, causing false alarms.
+The white dome is the Fresnel lens. It focuses infrared radiation onto the sensor element. Always keep it on during use. Remove it only to identify the pins.
 
-**3. Set the potentiometers**
+**Step 2 - Move the jumper to L position**
 
-| Knob | Label | Setting |
+There is a small black plastic jumper on the PIR board near the pins. Move it to the L position. In H mode the sensor re-triggers itself automatically every few seconds even when nothing is moving. This causes constant false alarms. L mode fires once and waits.
+
+**Step 3 - Adjust the potentiometers**
+
+| Knob | Label | Recommended Setting |
 |---|---|---|
-| Left | SX (Sensitivity) | Turn to midpoint for ~5m range |
-| Right | TX (Time delay) | Turn fully counter-clockwise for minimum delay |
+| Left knob | SX (Sensitivity) | Turn to midpoint for around 5 meter range |
+| Right knob | TX (Time delay) | Turn fully counter-clockwise for minimum hold time |
 
-**4. Wait 30 seconds after powering on**
-The PIR needs about 30 seconds to calibrate to room temperature. The code handles this automatically — it ignores all signals for the first 30 seconds.
+**Step 4 - Let it warm up**
+
+The PIR sensor needs about 30 seconds after power on to calibrate itself to the room temperature. During this time it fires random signals. The code automatically ignores all signals for the first 30 seconds so you do not need to do anything.
 
 ---
 
 ## Software Setup
 
-### Step 1 — Install Arduino IDE
-Download from [arduino.cc/en/software](https://www.arduino.cc/en/software)
+### Install Arduino IDE
 
-### Step 2 — Add ESP32 board support
+Download and install from [arduino.cc/en/software](https://www.arduino.cc/en/software)
+
+### Add ESP32 Board Support
+
 1. Open Arduino IDE
-2. Go to **File → Preferences**
-3. In "Additional boards manager URLs" paste:
+2. Go to File then Preferences
+3. Paste this URL in the Additional Boards Manager URLs field:
+
 ```
 https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 ```
-4. Go to **Tools → Board → Boards Manager**
-5. Search `esp32` and install **esp32 by Espressif Systems**
 
-### Step 3 — Install the WebSockets library
-1. Go to **Tools → Manage Libraries**
-2. Search `WebSockets`
-3. Install **WebSockets by Markus Sattler**
+4. Go to Tools then Board then Boards Manager
+5. Search for esp32 and install the package by Espressif Systems
 
-### Step 4 — Select your board
-Go to **Tools → Board → ESP32 Arduino → ESP32 Dev Module**
+### Install the WebSockets Library
+
+1. Go to Tools then Manage Libraries
+2. Search for WebSockets
+3. Install WebSockets by Markus Sattler
+
+### Select Your Board
+
+Go to Tools then Board then ESP32 Arduino then ESP32 Dev Module
 
 ---
 
 ## Uploading the Code
 
 1. Open `code/motion.ino` in Arduino IDE
-2. Find these two lines near the top and edit them:
+
+2. Find these two lines near the top of the file:
 
 ```cpp
 const char* ssid     = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
 ```
 
-Replace with your actual 2.4GHz WiFi network name and password.
+3. Replace the placeholder text with your actual 2.4GHz WiFi name and password. The values are case sensitive.
 
-> **Note:** ESP32 only supports 2.4GHz WiFi. If your router shows two networks (e.g. `MyWifi` and `MyWifi_5G`), use the one without `_5G`.
+> If your router broadcasts two networks like MyWifi and MyWifi_5G then always use the one without 5G in the name.
 
-3. Connect ESP32 to your computer via USB
-4. Go to **Tools → Port** and select the COM port (e.g. COM4 or COM6)
-5. Click the **Upload button** (right arrow →)
+4. Connect the ESP32 to your computer with a USB cable
 
-> If upload gets stuck at `Connecting....` — hold the **BOOT** button on the ESP32 until uploading starts, then release.
+5. Go to Tools then Port and select the correct COM port (usually COM4 or COM6 on Windows)
 
-6. Once uploaded, open **Tools → Serial Monitor**
-7. Set baud rate to **115200**
-8. Press the **EN (Reset)** button on the ESP32
-9. You will see:
+6. Click the Upload button (the right arrow at the top left)
+
+> If the upload gets stuck at Connecting then hold the BOOT button on the ESP32 board until you see upload progress in the output panel then release it.
+
+7. After upload finishes open Tools then Serial Monitor
+
+8. Set the baud rate to 115200 using the dropdown at the bottom right
+
+9. Press the EN button on the ESP32 to restart it
+
+10. You will see this output:
 
 ```
 Connecting.....
 Connected! IP: 192.168.1.42
 ```
 
+Note down the IP address shown. You will need it to open the dashboard.
+
 ---
 
-## Opening the Dashboard
+## Opening the Dashboard on Your Phone
 
-1. Make sure your phone is on the **same WiFi network** as the ESP32
-2. Open **Safari (iPhone) or Chrome (Android)**
-3. Type the IP address shown in Serial Monitor into the address bar (e.g. `192.168.1.42`)
-4. The dashboard opens — **tap the screen once** to enable sound alerts
+1. Connect your phone to the same WiFi network the ESP32 is connected to
+2. Open Safari on iPhone or Chrome on Android
+3. Type the IP address from Serial Monitor into the address bar (example: 192.168.1.42)
+4. The dashboard opens in your browser
+5. Tap anywhere on the screen once to enable sound alerts
 
-> **Tip for iPhone:** Add the page to your home screen via Share → Add to Home Screen for a fullscreen app-like experience.
+> iPhone tip: Tap the Share button then Add to Home Screen. This gives you a fullscreen app-like experience with an icon on your home screen.
 
 ---
 
 ## How the Dashboard Works
 
-### Home tab
-- **Radar** — animated radar sweep with a red blip when motion is detected
-- **Real motion counter** — counts confirmed detections (green)
-- **False alarms counter** — counts short spurious triggers (orange)
-- **Live timer** — while someone is in the sensor zone, a live counter shows how long they have been there
-- **Event log** — each event shows start time, end time, and duration
+### Home Tab
 
-### Log tab
-- Shows the raw log saved to the ESP32's flash memory
-- Tap **Refresh** to load the latest log
-- Tap **Copy all** then paste it anywhere to analyze your data
-- Tap **Clear** to wipe the log
+The home tab shows you everything at a glance.
 
----
+The radar at the top shows a rotating sweep. When motion is detected a red dot appears on the radar with expanding ring animations and a soft three note chime plays. The center of the radar shows the total detection count and the hold time of the last event.
 
-## Understanding the Event Log
+Below the radar are two stat cards. The green card shows confirmed real motion detections. The orange card shows false alarms that were filtered out.
 
-```
-=== Started, warming up 30s ===    ← boot, ignoring signals for 30s
-=== Warmup done, now active ===    ← now monitoring
-MOTION #1 | held:4200ms | time:45s uptime   ← real motion, lasted 4.2s
-FALSE+ | held:12ms | time:52s uptime        ← too short, filtered out
-MOTION #2 | held:7800ms | time:98s uptime   ← someone stood for 7.8s
-```
+The recent events list below shows each event with the start time, end time, total duration and whether it was real or a false alarm.
 
-**What "held" means:** How long the sensor output stayed HIGH — basically how long someone was in the detection zone. It is NOT distance. This sensor cannot measure distance, only motion.
+### Log Tab
 
-**False positive rule:** Any trigger shorter than 500ms is automatically classified as a false alarm and shown in orange. Real human movement always takes longer than that.
+The log tab shows the raw data saved to the ESP32 flash memory. Tap Refresh to load the latest entries. Tap Copy All to copy the entire log to your clipboard then paste it anywhere to analyze the data. Tap Clear to wipe the log and start fresh.
 
 ---
 
-## Sensor Specs
+## Reading the Log File
+
+```
+=== Started, warming up 30s ===       device just powered on, ignoring signals
+=== Warmup done, now active ===       now monitoring for real motion
+MOTION #1 | held:4200ms | time:45s   real motion, person was there for 4.2 seconds
+FALSE+ | held:12ms | time:52s        too brief, filtered as false alarm
+MOTION #2 | held:7800ms | time:98s   someone stood in range for 7.8 seconds
+```
+
+**What held time means**
+
+Held is how long the sensor output signal stayed HIGH after being triggered. It tells you how long someone was within the detection zone. It does not tell you how far away they were. This sensor cannot measure distance. It only detects changes in infrared radiation.
+
+**How false alarms are detected**
+
+Any trigger that lasts less than 500 milliseconds is automatically classified as a false alarm. Real human movement through a PIR detection zone always takes longer than half a second. Very short pulses are caused by electrical noise, temperature changes or the sensor warming up.
+
+---
+
+## Sensor Specifications
 
 | Spec | Value |
 |---|---|
 | Model | HC-SR501 |
-| Detection range | 3 to 7 metres (adjustable) |
+| Detection range | 3 to 7 meters adjustable |
 | Detection angle | 110 degree cone |
 | Operating voltage | 4.5V to 20V |
-| Measures | Motion only — not distance |
+| Output | Digital HIGH or LOW only |
+| Can measure distance | No |
 
 ---
 
 ## Troubleshooting
 
-**Serial Monitor is blank after uploading**
-Press the **EN** button on the ESP32 to restart it.
+**Serial Monitor shows nothing after upload**
+Press the EN button on the ESP32 to restart it. The Serial Monitor needs a restart to show output.
 
-**Stuck at `Connecting....` during upload**
-Hold the **BOOT** button while uploading, release when you see upload progress.
+**Upload stuck at Connecting**
+Hold the BOOT button on the ESP32 while the upload is trying to connect. Release it when you see percentage progress in the output.
 
-**WiFi not connecting**
-Make sure you are using a 2.4GHz network, not 5GHz. Check that the SSID and password are exactly correct — they are case sensitive.
+**WiFi keeps failing to connect**
+Check that you are using a 2.4GHz network. Check the SSID and password are exactly correct including uppercase and lowercase letters. Move the ESP32 closer to your router.
 
-**Lots of false alarms on startup**
-Normal — the PIR takes 30 seconds to calibrate. The code already ignores signals during warmup. If false alarms continue after warmup, move the jumper to **L position** on the PIR board.
+**False alarms happening constantly**
+This is almost always caused by the jumper being in H mode. Move it to L position. Also wait at least 60 seconds after power on before testing because the sensor fires randomly during warmup.
 
-**Dashboard not loading on phone**
-Make sure your phone and ESP32 are on the same WiFi router. Open the exact IP shown in Serial Monitor in Safari or Chrome.
+**Dashboard not opening on phone**
+Your phone and ESP32 must be on the same WiFi router. Type the full IP address exactly as shown in Serial Monitor. Make sure there is no http or www in front.
 
-**Sound not working on iPhone**
-Tap anywhere on the screen once first. iOS requires a user interaction before playing audio.
+**No sound on iPhone**
+iOS blocks audio until the user interacts with the page. Tap anywhere on the screen once and then the chime will work for the rest of the session.
 
-**COM port changed after unplugging**
-Go to Tools → Port and select the new COM number. The board is the same, Windows just assigned a different port number.
+**COM port number changed**
+This is normal after unplugging and replugging the USB cable. Go to Tools then Port and select the new port number. The board itself has not changed.
 
 ---
 
 ## How False Positive Filtering Works
 
-The PIR sensor sometimes fires briefly due to:
-- Electrical noise on power-on
-- Temperature changes in the room (AC, sunlight, fans)
-- The sensor self-triggering in H jumper mode
+The HC-SR501 sometimes produces short spurious triggers caused by:
 
-The code measures how long each trigger lasts. If it is shorter than 500ms, it is flagged as a false positive. Real human motion always produces a trigger longer than 500ms because it takes at least half a second to move through the sensor's field of view.
+- Electrical noise during power on
+- Room temperature changes from air conditioning or sunlight
+- The sensor self-triggering when the jumper is in H mode
+- Vibration or air movement from fans
+
+The code measures the duration of every trigger. When the signal goes LOW the code checks how long it was HIGH. If the duration is below 500 milliseconds it sends a false alarm event to the dashboard shown in orange. If it is above 500 milliseconds it is classified as real motion shown in red.
+
+This threshold works well in practice because a person moving through a 110 degree detection cone at any normal walking speed will always trigger the sensor for more than half a second.
 
 ---
 
-## Built With
+## Tech Stack
 
-- ESP32 WROOM-32
-- HC-SR501 PIR sensor
-- Arduino IDE with ESP32 core by Espressif
-- WebSockets library by Markus Sattler
-- Vanilla HTML, CSS, JavaScript — no frameworks
+- ESP32 WROOM-32 microcontroller
+- HC-SR501 PIR passive infrared sensor
+- Arduino IDE with ESP32 core by Espressif Systems
+- WebSockets library by Markus Sattler for real-time communication
+- SPIFFS for log file storage on ESP32 flash memory
+- Vanilla HTML, CSS and JavaScript for the dashboard
+- No external frameworks or cloud services
 
 ---
 
 ## License
 
-MIT License — free to use, modify, and share.
+MIT License. Free to use, modify and share.
 
 ---
 
 ## Author
 
-Built as a beginner IoT project. If this helped you, give it a star!
+Built as a beginner IoT project using parts under Rs 800.
+If this project helped you please give it a star on GitHub.

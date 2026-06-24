@@ -180,13 +180,11 @@ Write down the IP address. You need it to open the dashboard.
 
 ### Home Tab
 
-The home tab shows you everything at a glance.
+The radar at the top sweeps continuously. When motion is detected a red dot appears with ring animations and a short chime plays. The center shows total detection count and hold time of the last event.
 
-The radar at the top shows a rotating sweep. When motion is detected a red dot appears on the radar with expanding ring animations and a soft three note chime plays. The center of the radar shows the total detection count and the hold time of the last event.
+Below are two stat cards. Green is confirmed motion. Orange is filtered false alarms.
 
-Below the radar are two stat cards. The green card shows confirmed real motion detections. The orange card shows false alarms that were filtered out.
-
-The recent events list below shows each event with the start time, end time, total duration and whether it was real or a false alarm.
+The events list shows start time, end time, total duration and whether each detection was real or a false alarm.
 
 ### Log Tab
 

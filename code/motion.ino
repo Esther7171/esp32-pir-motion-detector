@@ -3,8 +3,8 @@
 #include <WebSocketsServer.h>
 #include <SPIFFS.h>
 
-const char* ssid     = "Excitel_tea";
-const char* password = "sudo_apt_install_coffee";
+const char* ssid     = "wifi_name";
+const char* password = "wifi_pass";
 
 #define PIR_PIN 13
 #define MIN_HOLD_MS 500   // shorter than this = false positive (electrical noise)
